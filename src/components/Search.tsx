@@ -40,7 +40,7 @@ const Search: React.FC<SearchProps> = (props) => {
                 />
                 <InputGroupAddon addonType="append">
                     <Button 
-                        color="success"
+                        color="primary"
                     >
                         <i className="fa fa-search" aria-hidden="true"></i> Tìm kiếm
                     </Button>

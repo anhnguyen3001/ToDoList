@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { Input, Table } from 'reactstrap';
 import { Task, Filter } from '../App';
 import TaskItem from './TaskItem';

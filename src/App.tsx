@@ -16,6 +16,11 @@ export interface Filter{
 	status? : number
 }
 
+export interface Sort{
+	by: string,
+	value: number 	// 1 - tăng, -1 - giảm
+}
+
 const App: React.FC = () => {
 	const TASK_DEFAULT : Task = {
 		id : '',
@@ -26,7 +31,7 @@ const App: React.FC = () => {
 	const DEFAULT_FILTER : Filter = {
         name : '',
         status : -1
-    };
+	};
 
 	const [collapse, setCollapse] = useState<boolean>(true);
 	const [tasks, setTasks] = useState<Array<Task>>([]);
@@ -147,7 +152,7 @@ const App: React.FC = () => {
 	}
 
 	var filterTask : Task[] = (keyword === '' && !isFilter()) ? [] :
-					tasks.filter( task =>{
+					tasks.filter( task => {
 						let newFilter = {...filter};
 						if (keyword !== '') newFilter.name = keyword;
 				
@@ -161,6 +166,21 @@ const App: React.FC = () => {
 
 						return task.status == status;
 					});
+
+	function onSort(sort : Sort) : void{
+		let {by, value} = sort;
+
+		let newTasks = [...tasks];
+		if (by === "name"){
+			newTasks = newTasks.sort((a, b) => a.name.localeCompare(b.name) * value);
+
+			setTasks(newTasks);
+		} else {
+			newTasks = newTasks.sort((a, b) => (b.status - a.status) * value);
+
+			setTasks(newTasks);
+		}
+	}
 
 	var elmForm = collapse ? '' : <TaskForm 
 									onCloseForm={ onCloseForm } 
@@ -186,6 +206,7 @@ const App: React.FC = () => {
 					<TaskControl 
 						onSearch={ onSearch }
 						isSearch={ keyword }
+						onSort= { onSort }
 					/>
 					<TaskList 
 						tasks={ (keyword !== '' || JSON.stringify(filter) !== JSON.stringify(DEFAULT_FILTER)) ? filterTask : tasks }

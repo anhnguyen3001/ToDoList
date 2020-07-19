@@ -60,3 +60,11 @@ label{
 .btn-warning:hover{
   background-color: #ec971f;
 }
+
+.dropdown-menu{
+  padding: 5px 0px;
+}
+
+.dropdown-item:hover{
+  background-color: #f1f1f1;
+}
