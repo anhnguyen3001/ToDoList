@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import {Row, Col, Button} from 'reactstrap';
-import $ from 'jquery';
+import { Row, Col, Button } from 'reactstrap';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import TaskControl from './components/TaskControl';
@@ -12,6 +11,11 @@ export interface Task{
     status: number // 0 - ẩn, 1 - kích hoạt
 }
 
+export interface Filter{
+	name : string,
+	status? : number
+}
+
 const App: React.FC = () => {
 	const TASK_DEFAULT : Task = {
 		id : '',
@@ -19,17 +23,16 @@ const App: React.FC = () => {
 		status : 0
 	};
 
+	const DEFAULT_FILTER : Filter = {
+        name : '',
+        status : -1
+    };
+
 	const [collapse, setCollapse] = useState<boolean>(true);
 	const [tasks, setTasks] = useState<Array<Task>>([]);
 	const [editTask, setEditTask] = useState<Task>(TASK_DEFAULT);
-	const [searchTask, setSearchTask] = useState<Task[]>([]);
-	const [isSearch, setIsSearch] = useState<boolean>(false);
-
-	var elmForm = collapse ? '' : <TaskForm 
-										onCloseForm={ onCloseForm } 
-										onSubmitForm = { onSubmitForm }
-										editTask={ editTask }
-									/>;
+	const [keyword, setKeyword] = useState<string>('');
+	const [filter, setFilter] = useState<Filter>(DEFAULT_FILTER);
 
 	// Get task list from local storage
 	useEffect(() => {
@@ -44,6 +47,10 @@ const App: React.FC = () => {
 
 	function isEditing() : boolean {
 		return JSON.stringify(editTask) !== JSON.stringify(TASK_DEFAULT);
+	}
+
+	function isFilter() : boolean{
+		return JSON.stringify(filter) !== JSON.stringify(DEFAULT_FILTER);
 	}
 
 	// Toggle task form
@@ -79,9 +86,7 @@ const App: React.FC = () => {
 		setTasks(newTasks);
 		localStorage.setItem('tasks', JSON.stringify(newTasks));
 		
-		setSearchTask([]);
-		
-		if ($('#search-form')) console.log ($('#search-form').children());
+		setKeyword('');
 
 		onCloseForm();
 	}
@@ -106,32 +111,11 @@ const App: React.FC = () => {
 
 			setTasks(newTasks);
 			localStorage.setItem('tasks', JSON.stringify(newTasks));
-
-			if(searchTask.length !== 0) {
-				searchTask.forEach( (task, index) => {
-					if (task.id === id){
-						searchTask.splice(index, 1);
-						setSearchTask(searchTask);
-						return;
-					} 
-				})
-			}
 		}
 	}
 
-	function onSearch(word : string) : void{
-		let searchTasks : Task[] = [];
-		
-		// Build regex
-		let pattern = new RegExp(/\w*/.source + word + /\w*/.source, 'i');
-		
-		tasks.forEach( task => {
-			if (pattern.test(task.name)){
-				searchTasks.push(task);
-			}
-		});
-		
-		setSearchTask(searchTasks);
+	function onSearch(word : string) : void{	
+		setKeyword(word);
 	}
 
 	function onToggleEdit(id : string) : void{
@@ -157,6 +141,33 @@ const App: React.FC = () => {
 		return result;
 	}
 
+	function onFilter(filter : Filter) : void{
+		if (filter.status === undefined) filter.status = -1;
+		setFilter(filter);
+	}
+
+	var filterTask : Task[] = (keyword === '' && !isFilter()) ? [] :
+					tasks.filter( task =>{
+						let newFilter = {...filter};
+						if (keyword !== '') newFilter.name = keyword;
+				
+						let { name, status } = newFilter;
+				
+						if (name !== '' && !task.name.toLowerCase().includes(name.toLowerCase())) 
+							return;
+						
+						if (status == -1) 
+							return task;
+
+						return task.status == status;
+					});
+
+	var elmForm = collapse ? '' : <TaskForm 
+									onCloseForm={ onCloseForm } 
+									onSubmitForm = { onSubmitForm }
+									editTask={ editTask }
+								/>;
+
 	return (
 		<div className="container mt-15">
 			<header><h1>Quản lí công việc</h1></header>
@@ -174,13 +185,15 @@ const App: React.FC = () => {
 					</Button>
 					<TaskControl 
 						onSearch={ onSearch }
-						isSearch={ isSearch }
+						isSearch={ keyword }
 					/>
 					<TaskList 
-						tasks={ searchTask.length == 0 ? tasks : searchTask }
+						tasks={ (keyword !== '' || JSON.stringify(filter) !== JSON.stringify(DEFAULT_FILTER)) ? filterTask : tasks }
+						keyword={ keyword }
 						onUpdateStatus={ onUpdateStatus }
 						onDeleteTask={ onDeleteTask }
 						onToggleEdit={ onToggleEdit }
+						onFilter={ onFilter }
 					/>
 				</Col>
 			</Row>

@@ -7,7 +7,7 @@ import { Row, Col } from 'reactstrap';
 
 interface TaskControlProps{
     onSearch : (word : string) => void,
-    isSearch : boolean
+    isSearch : string
 }
 
 const TaskControl: React.FC<TaskControlProps> = (props) => {
@@ -17,7 +17,7 @@ const TaskControl: React.FC<TaskControlProps> = (props) => {
                 {/* Search */}
                 <Col md="6">
                     <Search 
-                        onSearch={ props.onSearch}
+                        onSearch={ props.onSearch }
                         isSearch={ props.isSearch }
                     />
                 </Col>

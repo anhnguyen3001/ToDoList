@@ -3,28 +3,27 @@ import { Button, InputGroup, InputGroupAddon, Input, Form } from 'reactstrap';
 
 interface SearchProps{
     onSearch : (word : string) => void,
-    isSearch : boolean
+    isSearch : string
 }
 
 const Search: React.FC<SearchProps> = (props) => {
-    const [searchWord, setSearchWord] = useState<string>('');
+    const [keyword, setKeyword] = useState<string>('');
 
     useEffect(() => {
-        setSearchWord('');
-        console.log(props.isSearch);
+        setKeyword(props.isSearch);
     }, [props.isSearch])
 
     function onChange(e : ChangeEvent<HTMLInputElement>) : void{
         let target = e.target;
         let value = target.value;
 
-        setSearchWord(value);
+        setKeyword(value);
     }
 
     function onSubmit(e : FormEvent) : void{
         e.preventDefault();
 
-        props.onSearch(searchWord);
+        props.onSearch(keyword);
     }
 
 	return (
@@ -34,9 +33,9 @@ const Search: React.FC<SearchProps> = (props) => {
         >
             <InputGroup>
                 <Input 
-                    placeholder= { searchWord !== '' ? '' : "Nhập từ khoá..." }
-                    name="searchWord"
-                    value={ searchWord !== '' ? searchWord : "" }
+                    placeholder= { keyword !== '' ? '' : "Nhập từ khoá..." }
+                    name="keyword"
+                    value={ keyword }
                     onChange={ onChange }
                 />
                 <InputGroupAddon addonType="append">

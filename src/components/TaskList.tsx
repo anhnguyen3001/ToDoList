@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Input, Table } from 'reactstrap';
-import { Task } from '../App';
+import { Task, Filter } from '../App';
 import TaskItem from './TaskItem';
 
 interface TaskListProps{
     tasks : Task[],
+    keyword : string,
     onUpdateStatus(id : string) : void,
     onDeleteTask : (id : string) => void,
-    onToggleEdit : (id : string) => void
+    onToggleEdit : (id : string) => void,
+    onFilter : (filter : Filter) => void
 }
 
 const TaskList: React.SFC<TaskListProps> = (props) => {
-    let tasks : Task[] = props.tasks;
-    let elmTask = tasks.map((task : Task, index : number) => {
+    const DEFAULT_FILTER : Filter = {
+        name : '',
+        status : -1
+    };
+
+    const [filter, setFilter] = useState<Filter>(DEFAULT_FILTER);
+    
+    function onFilter(e : ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) : void{
+        let target = e.target;
+        let name = target.name;
+        let value = target.value;
+        
+        let newFilter : Filter = {...filter, [name] : (name === "status") ? Number(value) : value };
+
+        setFilter({...filter, [name] : (name === "status") ? Number(value) : value});
+        props.onFilter(newFilter);
+    }
+
+    let elmTask = props.tasks.map( (task : Task, index : number) => {
         return (
             <TaskItem
                 key={ index }
@@ -38,9 +57,20 @@ const TaskList: React.SFC<TaskListProps> = (props) => {
             <tbody>
                 <tr>
                     <td></td>
-                    <td><Input /></td>
                     <td>
-                        <select className="form-control">
+                        <Input
+                            name="name"
+                            value={ filter.name }
+                            onChange={ onFilter }
+                        />
+                    </td>
+                    <td>
+                        <select 
+                            name="status"
+                            className="form-control"
+                            value={ filter.status }
+                            onChange={ onFilter }
+                        >
                             <option value={-1}>Tất cả</option>
                             <option value={0}>Ẩn</option>
                             <option value={1}>Kích hoat</option>

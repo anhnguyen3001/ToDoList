@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 
-const TaskControl: React.FC = () => {
+interface SortProps{
+
+}
+
+const TaskControl: React.FC<SortProps> = () => {
 	return (
         <Button color="primary">Sắp xếp <i className="fa fa-sort" aria-hidden="true"></i></Button>
 	);
