@@ -1,0 +1,62 @@
+header{
+  text-align: center;
+}
+
+.card-header, .card-body{
+  padding: 10px 15px;
+}
+
+.card-header{
+  background-color: #FCF8E3;
+  color: #8A6D3B;
+}
+
+.card-header h6{
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+label{
+  font-weight: bold;
+}
+
+.mt-15{
+  margin-top: 15px;
+}
+
+.mr-10{
+  margin-right: 10px;
+}
+
+.pl-10{
+  padding-left: 10px;
+}
+
+.pt-10{
+  padding-top: 10px;
+}
+
+.txt-right{
+  text-align: right;
+}
+
+.status:hover{
+  cursor: pointer;
+}
+
+.btn{
+  color: #fff !important; 
+}
+
+.edit-btn{
+  padding: 2px 8px;
+}
+
+.btn-warning{
+  background-color: #f0AD4E;
+}
+
+.btn-warning:hover{
+  background-color: #ec971f;
+}
