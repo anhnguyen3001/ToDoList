@@ -1,32 +1,20 @@
 import React from 'react';
 
-import Search from './Search';
+import SearchControl from './SearchControl';
 import SortControl from './SortControl';
-import { Sort } from '../App';
 import { Row, Col } from 'reactstrap';
 
-interface TaskControlProps{
-    onSearch : (word : string) => void,
-    isSearch : string
-    onSort : (sort : Sort) => void
-}
-
-const TaskControl: React.FC<TaskControlProps> = (props) => {
+const TaskControl: React.FC = (props) => {
 	return (
         <div>
             <Row className="mt-15">
                 {/* Search */}
                 <Col md="6">
-                    <Search 
-                        onSearch={ props.onSearch }
-                        isSearch={ props.isSearch }
-                    />
+                    <SearchControl />
                 </Col>
                 {/* Sort */}
                 <Col md="6">
-                    <SortControl
-                        onSort = { props.onSort }
-                    />    
+                    <SortControl />    
                 </Col>
             </Row>
         </div>

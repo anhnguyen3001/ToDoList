@@ -1,18 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { Button, InputGroup, InputGroupAddon, Input, Form } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import Action from '../store/actions/index';
 
-interface SearchProps{
-    onSearch : (word : string) => void,
-    isSearch : string
-}
-
-const Search: React.FC<SearchProps> = (props) => {
+const SearchControl: React.FC = () => {
     const [keyword, setKeyword] = useState<string>('');
-
-    useEffect(() => {
-        setKeyword(props.isSearch);
-    }, [props.isSearch])
-
     function onChange(e : ChangeEvent<HTMLInputElement>) : void{
         let target = e.target;
         let value = target.value;
@@ -20,10 +12,10 @@ const Search: React.FC<SearchProps> = (props) => {
         setKeyword(value);
     }
 
+    const dispatch = useDispatch();
     function onSubmit(e : FormEvent) : void{
         e.preventDefault();
-
-        props.onSearch(keyword);
+        dispatch(Action.search(keyword));
     }
 
 	return (
@@ -50,4 +42,4 @@ const Search: React.FC<SearchProps> = (props) => {
 	);
 }
 
-export default Search;
+export default SearchControl;

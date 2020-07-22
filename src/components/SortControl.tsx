@@ -1,35 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { Sort } from '../App';
+import { Sort } from '../store/reducers/sort';
+import Action from '../store/actions/index';
+import { State } from '../store/reducers/index';
 
-interface SortProps{
-	onSort : (sort : Sort) => void
-}
-
-const SortControl: React.FC<SortProps> = (props) => {
+const SortControl: React.FC = () => {
 	const DESCEND = -1;
 	const ASCEND = 1;
 
 	const [toggle, setToggle] = useState<boolean>(false);
-	const [sort, setSort] = useState<Sort>({
-		by: '',
-		value: 0
-	});
+	const { sortBy, sortValue } = useSelector<State, Sort>(state => (state.sort));
 
 	function isActive(by : string, value : number) : boolean{
-		return (sort.by === by && sort.value === value)
+		return (sortBy === by && sortValue === value)
 	}
 
+	const dispatch = useDispatch();
 	function onSort(by : string, value : number) : void{
-		setSort({
-			by,
-			value
-		});
-		
-		props.onSort({
-			by,
-			value
-		});
+		dispatch(Action.sort(by, value));
 	}
 
 	return (
@@ -68,7 +57,6 @@ const SortControl: React.FC<SortProps> = (props) => {
 				</DropdownItem>
 			</DropdownMenu>
 		</Dropdown>
-        // <Button color="primary">Sắp xếp <i className="fa fa-sort" aria-hidden="true"></i></Button>
 	);
 }
 
